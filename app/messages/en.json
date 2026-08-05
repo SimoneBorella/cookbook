@@ -1,0 +1,198 @@
+{
+  "Landing": {
+    "titleHighlight": "Your Recipe Book",
+    "subtitle": "Your personal space to collect, organize, and cook your favorite recipes with ease.",
+    "loginButton": "Sign In"
+  },
+  "Login": {
+    "title": "Welcome back",
+    "description": "Enter your credentials to access CookBook.",
+    "identifierLabel": "Username or Email",
+    "passwordLabel": "Password",
+    "invalidCredentials": "Invalid credentials. Please try again.",
+    "loading": "Signing in...",
+    "signInButton": "Sign In"
+  },
+  "Dashboard": {
+    "title": "My Kitchen",
+    "subtitle": "What are we cooking today?",
+    "newRecipe": "New Recipe",
+    "recentlyVisited": "Recently Visited",
+    "seeAll": "See all",
+    "noImage": "No image",
+    "noRecipes": "You don't have any recipes yet.",
+    "addFirstRecipe": "Add your first recipe"
+  },
+  "RecipesList": {
+    "title": "All Recipes",
+    "subtitle": "Search and browse all your culinary creations.",
+    "searchPlaceholder": "Search by name or ingredient...",
+    "allCategories": "All Categories",
+    "noResults": "No recipes found with these filters.",
+    "clearFilters": "Clear Filters",
+    "newRecipe": "New Recipe",
+    "noImage": "No image"
+  },
+  "Sidebar": {
+    "dashboard": "My Kitchen",
+    "recipes": "All Recipes",
+    "settings": "Settings",
+    "annotations": "Annotations"
+  },
+  "Categories": {
+    "Breakfast": "Breakfast",
+    "Aperitifs": "Aperitifs",
+    "Appetizers": "Appetizers",
+    "First Courses": "First Courses",
+    "Main Courses": "Main Courses",
+    "Side Dishes": "Side Dishes",
+    "Desserts": "Desserts",
+    "Snacks": "Snacks",
+    "Bread & Baked Goods": "Bread & Baked Goods",
+    "Sauces & Preserves": "Sauces & Preserves",
+    "Cocktails": "Cocktails"
+  },
+  "RecipeView": {
+    "back": "Back to recipes",
+    "prepTime": "Prep",
+    "cookTime": "Cook",
+    "totalTime": "Total",
+    "yield": "Servings",
+    "ingredients": "Ingredients",
+    "steps": "Instructions",
+    "notFound": "Recipe not found.",
+    "loading": "Loading recipe...",
+    "editRecipe": "Edit",
+    "deleteRecipe": "Delete Recipe",
+    "deleteModalTitle": "Delete Recipe",
+    "deleteModalDesc": "Are you sure you want to delete this recipe? This action cannot be undone.",
+    "deleteCancel": "Cancel",
+    "deleteConfirm": "Delete"
+  },
+  "EditRecipe": {
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveRecipe": "Save Changes",
+    "title": "Edit Recipe",
+    "subtitle": "Update details, ingredients, or instructions of your recipe."
+  },
+  "NewRecipe": {
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveRecipe": "Save Recipe",
+    "title": "New Recipe",
+    "subtitle": "Add details, ingredients, and instructions for your new creation.",
+    "recipeTitleLabel": "Recipe Title",
+    "recipeTitlePlaceholder": "e.g., Spaghetti Carbonara",
+    "categoryLabel": "Category",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "A brief introduction to this dish...",
+    "imageLabel": "Cover Image",
+    "imageUpload": "Click to upload a photo",
+    "imageHint": "Optional (JPG, PNG max 5MB)",
+    "prepTimeLabel": "Prep Time (min)",
+    "prepTimePlaceholder": "e.g., 15",
+    "cookTimeLabel": "Cook Time (min)",
+    "cookTimePlaceholder": "e.g., 20",
+    "yieldAmountLabel": "Yield Amount",
+    "yieldAmountPlaceholder": "e.g., 4",
+    "yieldTypeLabel": "Yield Unit",
+    "yieldTypePlaceholder": "e.g., servings, pans, slices...",
+    "ingredientsTitle": "Ingredients",
+    "ingredientColName": "Name",
+    "ingredientColQty": "Qty",
+    "ingredientColUnit": "Unit",
+    "ingredientNamePlaceholder": "Name (e.g., Flour)",
+    "ingredientQtyPlaceholder": "Qty",
+    "ingredientUnitPlaceholder": "Unit",
+    "addIngredient": "Add Ingredient",
+    "stepsTitle": "Instructions",
+    "stepLabel": "Step",
+    "stepDelete": "Delete",
+    "stepPlaceholder": "Describe the step...",
+    "addStep": "Add Step"
+  },
+  "Header": {
+    "accountSettings": "Account Settings",
+    "logout": "Log out",
+    "adminRole": "Admin"
+  },
+  "Annotations": {
+    "title": "Annotations",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save",
+    "edit": "Edit",
+    "placeholder": "Write your markdown annotations here..."
+  },
+  "Settings": {
+    "title": "Settings",
+    "subtitle": "Manage your preferences and personal settings.",
+    "tabs": {
+      "password": "Change Password",
+      "users": "Users"
+    },
+    "changePassword": "Change Password",
+    "usersManagement": {
+      "title": "Users Management",
+      "subtitle": "Add, remove, or manage system user roles.",
+      "newUser": "New User",
+      "nameCol": "Username",
+      "emailCol": "Email",
+      "roleCol": "Role",
+      "actionsCol": "Actions",
+      "noUsers": "No users found",
+      "adminOnly": "Section restricted to administrators.",
+      "removeAdmin": "Remove Admin",
+      "makeAdmin": "Promote to Admin",
+      "nameFormatError": "Generated username is not valid.",
+      "roleSuperuser": "Superuser",
+      "roleAdmin": "Admin",
+      "roleUser": "User"
+    },
+    "addUserModal": {
+      "title": "Create New User",
+      "description": "Enter data. The system will automatically generate the username.",
+      "firstNameLabel": "First Name",
+      "lastNameLabel": "Last Name",
+      "emailLabel": "Email",
+      "roleLabel": "Role",
+      "roleUser": "User",
+      "roleAdmin": "Administrator",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "cancel": "Cancel",
+      "submit": "Create User",
+      "passwordMismatch": "Passwords do not match",
+      "defaultError": "Error creating user"
+    },
+    "deleteUserModal": {
+      "title": "Delete User",
+      "description": "Are you sure you want to delete user {name}? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "passwordModal": {
+      "title": "Change Password",
+      "description": "Enter your current password and your new password.",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "cancel": "Close",
+      "submit": "Update Password",
+      "success": "Password updated successfully!",
+      "defaultError": "Error changing password"
+    }
+  },
+  "ApiErrors": {
+    "unauthorized": "Unauthorized access.",
+    "missingData": "Missing mandatory data.",
+    "notFound": "Item not found.",
+    "internalError": "Internal server error.",
+    "invalidPassword": "The current password is incorrect.",
+    "passwordTooShort": "The new password must be at least 6 characters long.",
+    "emailInUse": "This email is already associated with an account.",
+    "nameInUse": "This username already exists.",
+    "cannotDeleteSelf": "You cannot delete your own account.",
+    "cannotDeleteAdmin": "The main administrator account cannot be deleted."
+  }
+}

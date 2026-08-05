@@ -1,0 +1,48 @@
+services:
+  cookbook-db:
+    image: mongo:8.0
+    container_name: cookbook-database
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - cookbook_db_data:/data/db
+    networks:
+      - cookbook-network
+
+  cookbook-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: cookbook-app
+    restart: always
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      PORT: ${APP_PORT}
+      NODE_ENV: development
+    depends_on:
+      - cookbook-db
+    networks:
+      - cookbook-network
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+      - cookbook_uploads:/app/public/uploads
+
+volumes:
+  cookbook_db_data:
+    driver: local
+  cookbook_uploads:
+    driver: local
+
+networks:
+  cookbook-network:
+    driver: bridge

@@ -1,0 +1,198 @@
+{
+  "Landing": {
+    "titleHighlight": "Il Tuo Ricettario",
+    "subtitle": "Il tuo spazio personale per raccogliere, organizzare e cucinare le tue ricette preferite in tutta semplicità.",
+    "loginButton": "Accedi"
+  },
+  "Login": {
+    "title": "Bentornato",
+    "description": "Inserisci le tue credenziali per accedere a CookBook.",
+    "identifierLabel": "Username o Email",
+    "passwordLabel": "Password",
+    "invalidCredentials": "Credenziali non valide. Riprova.",
+    "loading": "Accesso in corso...",
+    "signInButton": "Accedi"
+  },
+  "Dashboard": {
+    "title": "La Mia Cucina",
+    "subtitle": "Cosa prepariamo di buono oggi?",
+    "newRecipe": "Nuova Ricetta",
+    "recentlyVisited": "Visti di recente",
+    "seeAll": "Vedi tutte",
+    "noImage": "Nessuna immagine",
+    "noRecipes": "Non hai ancora nessuna ricetta.",
+    "addFirstRecipe": "Aggiungi la tua prima ricetta"
+  },
+  "RecipesList": {
+    "title": "Tutte le Ricette",
+    "subtitle": "Cerca e sfoglia tutte le tue creazioni culinarie.",
+    "searchPlaceholder": "Cerca per nome o ingrediente...",
+    "allCategories": "Tutte le Categorie",
+    "noResults": "Nessuna ricetta trovata con questi filtri.",
+    "clearFilters": "Azzera Filtri",
+    "newRecipe": "Nuova Ricetta",
+    "noImage": "Nessuna immagine"
+  },
+  "Sidebar": {
+    "dashboard": "La Mia Cucina",
+    "recipes": "Tutte le Ricette",
+    "settings": "Impostazioni",
+    "annotations": "Annotazioni"
+  },
+  "Categories": {
+    "Breakfast": "Colazione",
+    "Aperitifs": "Aperitivo",
+    "Appetizers": "Antipasti",
+    "First Courses": "Primi Piatti",
+    "Main Courses": "Secondi Piatti",
+    "Side Dishes": "Contorni",
+    "Desserts": "Dolci",
+    "Snacks": "Spuntini",
+    "Bread & Baked Goods": "Lievitati e Pane",
+    "Sauces & Preserves": "Salse e Conserve",
+    "Cocktails": "Cocktails"
+  },
+  "RecipeView": {
+    "back": "Torna al ricettario",
+    "prepTime": "Preparazione",
+    "cookTime": "Cottura",
+    "totalTime": "Totale",
+    "yield": "Porzioni",
+    "ingredients": "Ingredienti",
+    "steps": "Procedimento",
+    "notFound": "Ricetta non trovata.",
+    "loading": "Caricamento ricetta...",
+    "editRecipe": "Modifica",
+    "deleteRecipe": "Elimina Ricetta",
+    "deleteModalTitle": "Elimina Ricetta",
+    "deleteModalDesc": "Sei sicuro di voler eliminare questa ricetta? Questa azione è irreversibile.",
+    "deleteCancel": "Annulla",
+    "deleteConfirm": "Elimina"
+  },
+  "EditRecipe": {
+    "cancel": "Annulla",
+    "saving": "Salvataggio...",
+    "saveRecipe": "Salva Modifiche",
+    "title": "Modifica Ricetta",
+    "subtitle": "Aggiorna i dettagli, gli ingredienti o i passaggi della tua ricetta."
+  },
+  "NewRecipe": {
+    "cancel": "Annulla",
+    "saving": "Salvataggio...",
+    "saveRecipe": "Salva Ricetta",
+    "title": "Nuova Ricetta",
+    "subtitle": "Aggiungi i dettagli, gli ingredienti e i passaggi per la tua nuova creazione.",
+    "recipeTitleLabel": "Titolo della ricetta",
+    "recipeTitlePlaceholder": "Es. Spaghetti alla Carbonara",
+    "categoryLabel": "Categoria",
+    "descriptionLabel": "Descrizione",
+    "descriptionPlaceholder": "Una breve introduzione a questo piatto...",
+    "imageLabel": "Immagine di copertina",
+    "imageUpload": "Clicca per caricare una foto",
+    "imageHint": "Opzionale (JPG, PNG max 5MB)",
+    "prepTimeLabel": "Tempo di Preparazione (min)",
+    "prepTimePlaceholder": "Es. 15",
+    "cookTimeLabel": "Tempo di Cottura (min)",
+    "cookTimePlaceholder": "Es. 20",
+    "yieldAmountLabel": "Quantità",
+    "yieldAmountPlaceholder": "Es. 4",
+    "yieldTypeLabel": "Unità Porzioni",
+    "yieldTypePlaceholder": "Es. persone, teglie, fette...",
+    "ingredientsTitle": "Ingredienti",
+    "ingredientColName": "Nome",
+    "ingredientColQty": "Qtà",
+    "ingredientColUnit": "Unità",
+    "ingredientNamePlaceholder": "Nome (es. Farina)",
+    "ingredientQtyPlaceholder": "Qtà",
+    "ingredientUnitPlaceholder": "Unità",
+    "addIngredient": "Aggiungi Ingrediente",
+    "stepsTitle": "Procedimento",
+    "stepLabel": "Passaggio",
+    "stepDelete": "Elimina",
+    "stepPlaceholder": "Descrivi il passaggio...",
+    "addStep": "Aggiungi Passaggio"
+  },
+  "Header": {
+    "accountSettings": "Impostazioni Account",
+    "logout": "Esci",
+    "adminRole": "Amministratore"
+  },
+  "Annotations": {
+    "title": "Annotazioni",
+    "cancel": "Annulla",
+    "saving": "Salvataggio...",
+    "save": "Salva",
+    "edit": "Modifica",
+    "placeholder": "Scrivi qui i tuoi appunti in Markdown..."
+  },
+  "Settings": {
+    "title": "Impostazioni",
+    "subtitle": "Gestisci le tue preferenze e impostazioni personali.",
+    "tabs": {
+      "password": "Cambia Password",
+      "users": "Utenti"
+    },
+    "changePassword": "Cambia Password",
+    "usersManagement": {
+      "title": "Gestione Utenti",
+      "subtitle": "Aggiungi, rimuovi o gestisci i ruoli degli utenti del sistema.",
+      "newUser": "Nuovo Utente",
+      "nameCol": "Username",
+      "emailCol": "Email",
+      "roleCol": "Ruolo",
+      "actionsCol": "Azioni",
+      "noUsers": "Nessun utente trovato",
+      "adminOnly": "Sezione riservata agli amministratori.",
+      "removeAdmin": "Rimuovi Admin",
+      "makeAdmin": "Promuovi Admin",
+      "nameFormatError": "Il nome utente generato non è valido.",
+      "roleSuperuser": "Superuser",
+      "roleAdmin": "Admin",
+      "roleUser": "Utente"
+    },
+    "addUserModal": {
+      "title": "Crea Nuovo Utente",
+      "description": "Inserisci i dati. Il sistema genererà automaticamente l'username.",
+      "firstNameLabel": "Nome",
+      "lastNameLabel": "Cognome",
+      "emailLabel": "Email",
+      "roleLabel": "Ruolo",
+      "roleUser": "Utente",
+      "roleAdmin": "Amministratore",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Conferma Password",
+      "cancel": "Annulla",
+      "submit": "Crea Utente",
+      "passwordMismatch": "Le password non coincidono",
+      "defaultError": "Errore durante la creazione dell'utente"
+    },
+    "deleteUserModal": {
+      "title": "Elimina Utente",
+      "description": "Sei sicuro di voler eliminare l'utente {name}? L'azione è irreversibile.",
+      "cancel": "Annulla",
+      "confirm": "Elimina"
+    },
+    "passwordModal": {
+      "title": "Cambia Password",
+      "description": "Inserisci la tua password attuale e la nuova password.",
+      "currentPassword": "Password Attuale",
+      "newPassword": "Nuova Password",
+      "cancel": "Chiudi",
+      "submit": "Aggiorna Password",
+      "success": "Password aggiornata con successo!",
+      "defaultError": "Errore durante il cambio password"
+    }
+  },
+  "ApiErrors": {
+    "unauthorized": "Accesso non autorizzato.",
+    "missingData": "Dati obbligatori mancanti.",
+    "notFound": "Elemento non trovato.",
+    "internalError": "Errore interno del server.",
+    "invalidPassword": "La password attuale non è corretta.",
+    "passwordTooShort": "La nuova password deve contenere almeno 6 caratteri.",
+    "emailInUse": "Questa email è già associata a un account.",
+    "nameInUse": "Questo nome utente esiste già.",
+    "cannotDeleteSelf": "Non puoi eliminare il tuo stesso account.",
+    "cannotDeleteAdmin": "L'account amministratore principale non può essere eliminato."
+  }
+}
