@@ -1,3 +1,6 @@
+# App files
+uploads/
+
 # Dependencies
 node_modules/
 app/node_modules/

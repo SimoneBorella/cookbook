@@ -45,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-2 h-auto w-full hover:bg-transparent"
             >
               <Link href="/" onClick={handleLinkClick} className="flex items-center w-full overflow-hidden">
-                <span className="font-extrabold tracking-tight text-4xl inline-block bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent leading-normal">
+                <span className="font-extrabold tracking-tight text-5xl inline-block bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent leading-normal">
                   CookBook
                 </span> 
               </Link>

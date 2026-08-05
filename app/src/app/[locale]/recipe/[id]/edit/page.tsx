@@ -124,11 +124,22 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
         setErrorMessage("Il file selezionato deve essere un'immagine.");
         return;
       }
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+
+      // Pulisce il nome del file rimuovendo spazi, maiuscole e caratteri speciali
+      const safeName = file.name
+        .toLowerCase()
+        .replace(/[^a-z0-9.]/g, "_")
+        .replace(/_+/g, "_");
+
+      // Crea un nuovo oggetto File con il nome pulito
+      const sanitizedFile = new File([file], safeName, { type: file.type });
+
+      setImageFile(sanitizedFile);
+      setImagePreview(URL.createObjectURL(sanitizedFile));
       setErrorMessage("");
     }
   };
+
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

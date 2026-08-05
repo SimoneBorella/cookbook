@@ -4,8 +4,16 @@ import { authOptions } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
+// Configurazione opzionale per aumentare i limiti di corpo della richiesta se necessario (Next.js App Router)
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
+
 export async function POST(req: Request) {
-  // Sicurezza: controlla che l'utente sia autenticato
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -19,7 +27,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Nessun file trovato" }, { status: 400 });
     }
 
-    // Valida che il file sia effettivamente un'immagine
     if (!file.type.startsWith("image/")) {
       return NextResponse.json({ error: "Il file deve essere un'immagine" }, { status: 400 });
     }
@@ -27,23 +34,17 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Genera un nome file univoco per evitare collisioni
+    // Pulizia e sicurezza del nome file originario
+    const originalName = file.name.replace(/[^a-zA-Z0-9_.-]/g, "_");
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.name) || ".jpg";
+    const ext = path.extname(originalName) || `.${file.type.split("/")[1] || "jpg"}`;
     const filename = `recipe-${uniqueSuffix}${ext}`;
-
-    // Percorso della cartella pubblica mappata sul volume Docker persistente
     const uploadDir = path.join(process.cwd(), "public", "uploads", "recipes");
-    
-    // Assicura che la cartella esista, altrimenti la crea
     await mkdir(uploadDir, { recursive: true });
+    await writeFile(path.join(uploadDir, filename), buffer);
 
-    // Scrive il file fisicamente sul disco del server
-    const filepath = path.join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-
-    // Restituisce l'URL relativo pubblico da salvare nel database
-    const publicUrl = `/uploads/recipes/${filename}`;
+    const publicUrl = `/api/uploads/recipes/${filename}`;
+    
     return NextResponse.json({ url: publicUrl }, { status: 201 });
 
   } catch (error) {
