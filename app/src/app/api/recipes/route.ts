@@ -24,7 +24,6 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  // Proteggiamo la route: solo gli utenti loggati possono creare ricette
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -35,16 +34,15 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
 
-    // Validazione base
-    if (!data.title || !data.categoryId) {
-      return NextResponse.json({ error: "Titolo e categoria sono obbligatori" }, { status: 400 });
+    if (!data.title || !data.categoryIds || !Array.isArray(data.categoryIds) || data.categoryIds.length === 0) {
+      return NextResponse.json({ error: "Titolo e almeno una categoria sono obbligatori" }, { status: 400 });
     }
 
     const newRecipe = {
       ...data,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lastVisited: new Date().toISOString(), // Apparirà subito in "Visti di recente"
+      lastVisited: new Date().toISOString(),
     };
 
     await client.connect();
