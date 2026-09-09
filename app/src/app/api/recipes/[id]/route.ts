@@ -7,10 +7,8 @@ const uri = process.env.MONGODB_URI as string;
 
 export async function GET(
   request: Request,
-  // NOTA: In Next.js 15 params è una Promise!
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Aspettiamo di risolvere i parametri
   const resolvedParams = await params;
   const id = resolvedParams.id;
 

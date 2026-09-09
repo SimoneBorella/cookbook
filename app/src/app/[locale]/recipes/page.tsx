@@ -3,113 +3,32 @@
 import * as React from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Search, Plus, Clock, Users, Loader2, X, ChefHat } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { useRecipes } from "@/components/providers/recipes-provider";
 
-interface Ingredient {
-  name: string;
-}
-
-interface Recipe {
-  _id: string;
-  title: string;
-  categoryIds: string[];
-  image: string;
-  prepTime: number;
-  cookTime: number;
-  yield: { amount: number; type: string };
-  ingredients: Ingredient[];
-  createdAt: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  order: number;
-}
-
-// Spostiamo la logica in un componente interno per poter usare useSearchParams sotto Suspense
 function RecipesListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("RecipesList");
   const tCat = useTranslations("Categories");
-  const locale = useLocale();
+  const tYield = useTranslations("YieldTypes");
 
-  const [recipes, setRecipes] = React.useState<Recipe[]>([]);
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { recipes, categories, loading } = useRecipes();
 
-  // Stati per i filtri (Inizializza selectedCategory leggendo l'URL!)
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState(searchParams.get("category") || "all");
 
-  React.useEffect(() => {
-    Promise.all([
-      fetch("/api/recipes").then(res => res.json()),
-      fetch("/api/categories").then(res => res.json())
-    ])
-    .then(async ([recipesData, categoriesData]) => {
-      if (Array.isArray(categoriesData)) {
-        setCategories(categoriesData.sort((a, b) => a.order - b.order));
-      }
-      
-      if (Array.isArray(recipesData)) {
-        let processedRecipes = [...recipesData];
-
-        if (processedRecipes.length > 0) {
-          // Estraiamo tutti i tipi di yield da tradurre online
-          const yieldTypesToTranslate = processedRecipes.map(r => r.yield?.type || "");
-
-          try {
-            const transRes = await fetch("/api/translate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({ 
-                text: yieldTypesToTranslate, 
-                targetLanguage: locale 
-              }),
-            });
-
-            if (transRes.ok) {
-              const transData = await transRes.json();
-              const tr = transData.translatedText;
-
-              if (Array.isArray(tr) && tr.length === yieldTypesToTranslate.length) {
-                processedRecipes = processedRecipes.map((recipe: Recipe, index: number) => ({
-                  ...recipe,
-                  yield: {
-                    ...recipe.yield,
-                    type: tr[index] || recipe.yield.type
-                  }
-                }));
-              }
-            }
-          } catch (err) {
-            console.error("Errore durante la traduzione online dello yield:", err);
-          }
-        }
-
-        setRecipes(processedRecipes);
-      }
-    })
-    .catch(err => console.error("Errore caricamento dati:", err))
-    .finally(() => setLoading(false));
-  }, [locale]);
-
-  // Aggiorna la categoria se l'URL cambia mentre si è già sulla pagina
   React.useEffect(() => {
     const cat = searchParams.get("category");
     if (cat) setSelectedCategory(cat);
   }, [searchParams]);
 
-  // Funzione di supporto per ottenere i nomi tradotti delle categorie dati gli ID
   const getCategoryNames = (categoryIds: string[]) => {
     if (!Array.isArray(categoryIds)) return [];
     return categoryIds
@@ -121,14 +40,11 @@ function RecipesListContent() {
       .filter(Boolean) as string[];
   };
 
-  // Logica di Filtro e Ricerca
   const filteredRecipes = React.useMemo(() => {
     return recipes.filter(recipe => {
-      // Filtro per Categoria (verifica se l'array categoryIds contiene l'ID selezionato)
       if (selectedCategory !== "all" && (!recipe.categoryIds || !recipe.categoryIds.includes(selectedCategory))) {
         return false;
       }
-      // Filtro Testuale (Cerca nel titolo o negli ingredienti)
       if (searchQuery.trim() !== "") {
         const query = searchQuery.toLowerCase();
         const matchTitle = recipe.title.toLowerCase().includes(query);
@@ -146,7 +62,7 @@ function RecipesListContent() {
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
-    router.replace("/recipes"); // Pulisce anche l'URL
+    router.replace("/recipes");
   };
 
   if (loading) {
@@ -211,7 +127,6 @@ function RecipesListContent() {
             ))}
           </select>
         </div>
-
       </div>
 
       {/* Griglia Ricette */}
@@ -219,6 +134,9 @@ function RecipesListContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-1">
           {filteredRecipes.map((recipe) => {
             const categoryNames = getCategoryNames(recipe.categoryIds);
+            
+            const yieldType = recipe.yield?.type?.toLowerCase() || "";
+            const translatedYield = tYield.has(yieldType as any) ? tYield(yieldType as any) : yieldType;
 
             return (
               <Card 
@@ -232,6 +150,9 @@ function RecipesListContent() {
                       src={recipe.image} 
                       alt={recipe.title} 
                       fill 
+                      sizes="(max-width: 768px) 100vw, 250px" 
+                      quality={50} 
+                      loading="lazy"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
@@ -243,7 +164,6 @@ function RecipesListContent() {
                 </div>
                 
                 <CardContent className="p-5 flex flex-col gap-2 flex-1">
-                  {/* Badge Categorie Multiple */}
                   {categoryNames.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-0.5">
                       {categoryNames.map((catName, i) => (
@@ -265,7 +185,7 @@ function RecipesListContent() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Users className="h-4 w-4" />
-                      <span>{recipe.yield?.amount || 1} {recipe.yield?.type || ""}</span>
+                      <span>{recipe.yield?.amount || 1} {translatedYield}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -286,20 +206,19 @@ function RecipesListContent() {
 
       <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-55">
         <Button 
-        size="lg" 
-        onClick={() => router.push("/recipe/new")}
-        className="h-14 w-14 sm:w-auto rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-0 sm:px-6 flex items-center justify-center"
+          size="lg" 
+          onClick={() => router.push("/recipe/new")}
+          className="h-14 w-14 sm:w-auto rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-0 sm:px-6 flex items-center justify-center"
         >
-        <Plus className="h-6 w-6 sm:mr-2 shrink-0" />
-        <span className="hidden sm:inline font-semibold text-base">{t("newRecipe")}</span>
+          <Plus className="h-6 w-6 sm:mr-2 shrink-0" />
+          <span className="hidden sm:inline font-semibold text-base">{t("newRecipe")}</span>
         </Button>
-    </div>
+      </div>
 
     </div>
   );
 }
 
-// Wrapper di Suspense richiesto da Next.js quando si usa useSearchParams
 export default function RecipesListPage() {
   return (
     <React.Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>

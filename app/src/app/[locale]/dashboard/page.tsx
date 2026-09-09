@@ -2,111 +2,23 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { useRouter } from "@/i18n/routing"; 
-import { useTranslations, useLocale } from "next-intl"; 
+import { useTranslations } from "next-intl"; 
 import { Loader2, Clock, Users, ArrowRight, Plus, ChefHat } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-interface Ingredient {
-  name: string;
-  quantity: number;
-  unit: string;
-}
-
-interface Recipe {
-  _id: string;
-  title: string;
-  categoryIds: string[];
-  image: string;
-  description: string;
-  prepTime: number;
-  cookTime: number;
-  yield: {
-    amount: number;
-    type: string;
-  };
-  ingredients: Ingredient[];
-  steps: string[];
-  createdAt: string;
-  updatedAt?: string;
-  lastVisited?: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  order: number;
-}
+import { useRecipes, Recipe } from "@/components/providers/recipes-provider";
 
 export default function DashboardPage() {
-  const { status } = useSession();
   const router = useRouter();
-  const locale = useLocale();
-  
   const t = useTranslations("Dashboard"); 
   const tCat = useTranslations("Categories"); 
+  const tYield = useTranslations("YieldTypes");
 
-  const [recipes, setRecipes] = React.useState<Recipe[]>([]);
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { recipes, categories, loading } = useRecipes();
 
-  React.useEffect(() => {
-    if (status === "authenticated") {
-      Promise.all([
-        fetch("/api/recipes").then((res) => res.json()), 
-        fetch("/api/categories").then((res) => res.json())
-      ])
-        .then(async ([recipesData, categoriesData]) => {
-          if (Array.isArray(categoriesData)) setCategories(categoriesData);
-          
-          if (Array.isArray(recipesData)) {
-            let processedRecipes = [...recipesData];
-
-            if (processedRecipes.length > 0) {
-              const yieldTypesToTranslate = processedRecipes.map(r => r.yield?.type || "");
-
-              try {
-                const transRes = await fetch("/api/translate", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  credentials: "include",
-                  body: JSON.stringify({ 
-                    text: yieldTypesToTranslate, 
-                    targetLanguage: locale 
-                  }),
-                });
-
-                if (transRes.ok) {
-                  const transData = await transRes.json();
-                  const tr = transData.translatedText;
-
-                  if (Array.isArray(tr) && tr.length === yieldTypesToTranslate.length) {
-                    processedRecipes = processedRecipes.map((recipe: Recipe, index: number) => ({
-                      ...recipe,
-                      yield: {
-                        ...recipe.yield,
-                        type: tr[index] || recipe.yield.type
-                      }
-                    }));
-                  }
-                }
-              } catch (err) {
-                console.error("Errore durante la traduzione online dello yield:", err);
-              }
-            }
-
-            setRecipes(processedRecipes);
-          }
-        })
-        .catch((err) => console.error("Errore caricamento ricettario:", err))
-        .finally(() => setLoading(false));
-    }
-  }, [status, locale]);
-
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -128,7 +40,6 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 mb-10">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-xl font-bold tracking-tight">{title}</h2>
-          
           <Button 
             variant="ghost" 
             size="sm" 
@@ -140,46 +51,54 @@ export default function DashboardPage() {
         </div>
         
         <div className="flex overflow-x-auto gap-4 pb-4 px-1 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {items.map((recipe) => (
-            <Card 
-              key={recipe._id} 
-              onClick={() => router.push(`/recipe/${recipe._id}`)}
-              className="group shrink-0 w-64 snap-start cursor-pointer border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300 overflow-hidden bg-card"
-            >
-              <div className="relative h-40 w-full overflow-hidden bg-muted">
-                {recipe.image ? (
-                  <Image 
-                    src={recipe.image} 
-                    alt={recipe.title} 
-                    fill 
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-900 text-muted-foreground">
-                    <ChefHat className="h-10 w-10 opacity-20" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
-              </div>
-              
-              <CardContent className="p-4 flex flex-col gap-2 relative">
-                <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
-                  {recipe.title}
-                </h3>
-                
-                <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{recipe.prepTime + recipe.cookTime} min</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5" />
-                    <span>{recipe.yield.amount} {recipe.yield.type}</span>
-                  </div>
+          {items.map((recipe) => {
+            const yieldType = recipe.yield?.type?.toLowerCase() || "";
+            const translatedYield = tYield.has(yieldType as any) ? tYield(yieldType as any) : yieldType;
+
+            return (
+              <Card 
+                key={recipe._id} 
+                onClick={() => router.push(`/recipe/${recipe._id}`)}
+                className="group shrink-0 w-64 snap-start cursor-pointer border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300 overflow-hidden bg-card"
+              >
+                <div className="relative h-40 w-full overflow-hidden bg-muted">
+                  {recipe.image ? (
+                    <Image 
+                      src={recipe.image} 
+                      alt={recipe.title} 
+                      fill 
+                      sizes="(max-width: 768px) 100vw, 250px" 
+                      quality={50} 
+                      loading="lazy"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-900 text-muted-foreground">
+                      <ChefHat className="h-10 w-10 opacity-20" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                
+                <CardContent className="p-4 flex flex-col gap-2 relative">
+                  <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
+                    {recipe.title}
+                  </h3>
+                  
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span>{(recipe.prepTime || 0) + (recipe.cookTime || 0)} min</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Users className="h-3.5 w-3.5" />
+                      <span>{recipe.yield?.amount || 1} {translatedYield}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     );
@@ -199,7 +118,7 @@ export default function DashboardPage() {
 
       {sortedCategories.map(category => {
         const categoryRecipes = recipes.filter(r => r.categoryIds?.includes(category._id));
-        const translatedCategoryName = tCat(category.name as any);
+        const translatedCategoryName = tCat.has(category.name as any) ? tCat(category.name as any) : category.name;
 
         return (
           <RecipeCarousel 

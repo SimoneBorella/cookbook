@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft, Clock, Users, ChefHat, CheckCircle2, Loader2, Flame, Trash2, Pencil, Minus, Plus } from "lucide-react";
 
@@ -26,7 +26,7 @@ interface Ingredient {
 interface Recipe {
   _id: string;
   title: string;
-  categoryIds: string[]; // Aggiornato a array di ID
+  categoryIds: string[];
   image: string;
   description: string;
   prepTime: number;
@@ -48,7 +48,7 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const t = useTranslations("RecipeView");
   const tCat = useTranslations("Categories");
-  const locale = useLocale();
+  const tYield = useTranslations("YieldTypes");
   const unwrappedParams = React.use(params as any) as { id: string };
 
   const [recipe, setRecipe] = React.useState<Recipe | null>(null);
@@ -56,10 +56,8 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   
-  // Stato per le porzioni dinamiche
   const [currentYield, setCurrentYield] = React.useState<number>(1);
   
-  // Stati per l'eliminazione
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
@@ -81,41 +79,6 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
           if (Array.isArray(categoriesData)) setCategories(categoriesData);
         }
 
-        const textsToTranslate = [
-          data.title,
-          data.description,
-          data.yield.type,
-          ...data.ingredients.map(ing => ing.name),
-          ...data.ingredients.map(ing => ing.unit),
-          ...data.steps
-        ];
-
-        const transRes = await fetch("/api/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            text: textsToTranslate, 
-            targetLanguage: locale 
-          }),
-        });
-
-        if (transRes.ok) {
-          const transData = await transRes.json();
-          const tr = transData.translatedText;
-
-          if (Array.isArray(tr) && tr.length === textsToTranslate.length) {
-            let idx = 0;
-            data.title = tr[idx++];
-            data.description = tr[idx++];
-            data.yield.type = tr[idx++];
-            
-            data.ingredients.forEach(ing => { ing.name = tr[idx++]; });
-            data.ingredients.forEach(ing => { ing.unit = tr[idx++]; });
-            
-            data.steps = data.steps.map(() => tr[idx++]);
-          }
-        }
-
         if (isMounted) {
           setRecipe(data);
           setCurrentYield(data.yield.amount || 1);
@@ -133,7 +96,7 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
     fetchData();
 
     return () => { isMounted = false };
-  }, [unwrappedParams.id, locale]);
+  }, [unwrappedParams.id]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -154,7 +117,6 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
     }
   };
 
-  // Funzione per ricavare i nomi tradotti delle categorie dati gli ID
   const getCategoryNames = (categoryIds: string[]) => {
     if (!Array.isArray(categoryIds)) return [];
     return categoryIds
@@ -192,6 +154,9 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
   const totalTime = recipe.prepTime + recipe.cookTime;
   const yieldRatio = currentYield / (recipe.yield.amount || 1);
   const categoryNames = getCategoryNames(recipe.categoryIds);
+
+  const rawYieldType = recipe.yield?.type?.toLowerCase() || "";
+  const translatedYield = tYield.has(rawYieldType as any) ? tYield(rawYieldType as any) : rawYieldType;
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 animate-in fade-in duration-500 pb-24">
@@ -300,7 +265,7 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
                     >
                       <Plus className="h-3 w-3" />
                     </button>
-                    <span className="font-semibold text-sm ml-1 text-foreground/80">{recipe.yield.type}</span>
+                    <span className="font-semibold text-sm ml-1 text-foreground/80">{translatedYield}</span>
                   </div>
                 </div>
               </div>
@@ -313,8 +278,9 @@ export default function RecipeViewPage({ params }: { params: { id: string } }) {
                 src={recipe.image} 
                 alt={recipe.title} 
                 fill 
-                className="object-cover"
+                quality={50} 
                 priority
+                className="object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-900 text-muted-foreground">

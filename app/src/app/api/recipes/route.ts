@@ -5,14 +5,33 @@ import { authOptions } from "@/lib/auth";
 
 const uri = process.env.MONGODB_URI as string;
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Analizza i parametri per capire chi sta chiamando l'API
+  const { searchParams } = new URL(req.url);
+  const isSlim = searchParams.get("slim") === "true"; // Passato dalla Dashboard
+
   const client = new MongoClient(uri);
   try {
     await client.connect();
     const db = client.db(process.env.MONGO_INITDB_DATABASE || "cookbook_db");
     
-    // Recupera tutte le ricette (ordinate per data di creazione decrescente)
-    const recipes = await db.collection("recipes").find({}).sort({ createdAt: -1 }).toArray();
+    // Configura la proiezione: 0 = "escludi questo campo"
+    // Escludiamo SEMPRE i passi di preparazione e la descrizione (i campi più pesanti)
+    const projection: any = {
+      steps: 0,
+      description: 0,
+    };
+
+    // Se è la Dashboard a chiamare, escludiamo anche la lista degli ingredienti!
+    if (isSlim) {
+      projection.ingredients = 0;
+    }
+
+    const recipes = await db.collection("recipes")
+      .find({})
+      .project(projection) // <--- QUI AVVIENE LA MAGIA DELL'OTTIMIZZAZIONE
+      .sort({ createdAt: -1 })
+      .toArray();
     
     return NextResponse.json(recipes);
   } catch (error) {

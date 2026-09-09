@@ -12,6 +12,7 @@ import { routing } from '@/i18n/routing';
 
 import { AuthProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { RecipesProvider } from "@/components/providers/recipes-provider";
 import { ActiveThemeProvider } from "@/components/active-theme";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -82,26 +83,28 @@ export default async function RootLayout({
               enableColorScheme
             >
               <ActiveThemeProvider initialTheme={activeThemeValue}>
-                <SidebarProvider
-                  defaultOpen={defaultOpen}
-                  style={
-                    {
-                      "--sidebar-width": "calc(var(--spacing) * 72)",
-                      "--header-height": "calc(var(--spacing) * 12)",
-                    } as React.CSSProperties
-                  }
-                >
-                  <AppSidebar variant="inset" />
+                <RecipesProvider>
+                  <SidebarProvider
+                    defaultOpen={defaultOpen}
+                    style={
+                      {
+                        "--sidebar-width": "calc(var(--spacing) * 72)",
+                        "--header-height": "calc(var(--spacing) * 12)",
+                      } as React.CSSProperties
+                    }
+                  >
+                    <AppSidebar variant="inset" />
 
-                  <SidebarInset className="mx-0 my-0 border-0 rounded-none bg-transparent md:my-2 md:mx-2 md:rounded-xl md:border shadow-none md:shadow-sm">
-                    <SiteHeader />
+                    <SidebarInset className="mx-0 my-0 border-0 rounded-none bg-transparent md:my-2 md:mx-2 md:rounded-xl md:border shadow-none md:shadow-sm">
+                      <SiteHeader />
 
-                    <main className="flex-1 px-1 py-4 md:p-6">
-                      {children}
-                    </main>
+                      <main className="flex-1 px-1 py-4 md:p-6">
+                        {children}
+                      </main>
 
-                  </SidebarInset>
-                </SidebarProvider>
+                    </SidebarInset>
+                  </SidebarProvider>
+                </RecipesProvider>
               </ActiveThemeProvider>
             </ThemeProvider>
           </AuthProvider>
