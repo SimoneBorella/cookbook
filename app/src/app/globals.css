@@ -131,17 +131,18 @@
   --sidebar-ring: oklch(0.696 0.170 162.48);
 }
 
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground;
   }
 }
 
 body {
-  @apply overscroll-none bg-transparent;
+  @apply overscroll-none;
 }
 
 :root {
